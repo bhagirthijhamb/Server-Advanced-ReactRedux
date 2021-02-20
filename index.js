@@ -5,6 +5,9 @@ const morgan = require('morgan');
 const app = express();
 
 // App Setup
+// middlewares - any incoming request tot he server will be passed into these by default
+app.use(morgan('combined')); // logging framework
+app.use(express.json()); // any incoming request will be parsed as json
 
 // Server setup
 const port = process.env.PORT || 3090;
