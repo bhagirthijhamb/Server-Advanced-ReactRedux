@@ -3,11 +3,13 @@ const express = require('express');
 const http = require('http');
 const morgan = require('morgan');
 const app = express();
+const router = require('./router');
 
 // App Setup
 // middlewares - any incoming request tot he server will be passed into these by default
 app.use(morgan('combined')); // logging framework
-app.use(express.json()); // any incoming request will be parsed as json
+app.use(express.json()); // any incoming request is going to be parsed as if it was json
+router(app);
 
 // Server setup
 const port = process.env.PORT || 3090;
