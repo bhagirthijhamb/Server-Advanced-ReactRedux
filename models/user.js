@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt-nodejs');
 
 // Define our model
 const userSchema = new Schema({
@@ -17,15 +17,14 @@ userSchema.pre('save', function(next){
 
   // generate a salt then run callback
   // (salt generation takes some time, so we pass a callback function)
-  // bcrypt.genSalt(10, function(err, salt){
-  //   if(err){ 
-  //     console.log('error1', err)
-  //     return next(err) 
-  //   };
+  bcrypt.genSalt(10, function(err, salt){
+    if(err){ 
+      return next(err) 
+    };
     
     // hash (encrypt) our password using the salt
     // (hashing takes some time, so we pass a callback function)
-    bcrypt.hash(user.password, 10, function(err, hash){
+    bcrypt.hash(user.password, salt, null, function(err, hash){
       if(err){ 
         return next(err); 
       };
@@ -35,8 +34,16 @@ userSchema.pre('save', function(next){
       // next() mean go ahead and save the model
       next(); 
     })
-  // })
+  })
 })
+
+userSchema.methods.comparePassword = function(candidatePassword, callback){
+  bcrypt.compare(candidatePassword, this.password, function(err, isMatch){
+    if(err) { return callback(err); }
+
+    callback(null, isMatch);
+  })
+}
 
 // Create the model class
 const User = mongoose.model('User', userSchema);
