@@ -3,6 +3,7 @@ const passportService = require('./services/passport');
 const passport = require('passport');
 
 const requireAuth = passport.authenticate('jwt', { session: false });
+const requireSignin = passport.authenticate('local', { session: false });
 
 // export a function from this file
 // import it to the index.js file and we wil passs app into that imported function
@@ -17,6 +18,7 @@ const requireAuth = passport.authenticate('jwt', { session: false });
 module.exports = function(app){
   app.get('/', requireAuth, function(req, res) {
     res.send({ hi: 'there' });
-  })
+  });
+  app.post('/signin', requireSignin, Authentication.signin);
   app.post('/signup', Authentication.signup);
 }
