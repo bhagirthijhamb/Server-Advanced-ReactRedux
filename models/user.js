@@ -14,7 +14,6 @@ const userSchema = new Schema({
 userSchema.pre('save', function(next){
   // get access to user model
   const user = this;
-  console.log(user, user.email, user.password);
 
   // generate a salt then run callback
   // (salt generation takes some time, so we pass a callback function)
@@ -27,13 +26,10 @@ userSchema.pre('save', function(next){
     // hash (encrypt) our password using the salt
     // (hashing takes some time, so we pass a callback function)
     bcrypt.hash(user.password, 10, function(err, hash){
-      // console.log('salt', salt);
       if(err){ 
-        console.log('error2', err)
         return next(err); 
       };
 
-      console.log('hash', hash)
       // overwrite plain text password with encrypted password
       user.password = hash;
       // next() mean go ahead and save the model
